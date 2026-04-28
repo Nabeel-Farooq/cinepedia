@@ -1,0 +1,45 @@
+{% extends 'index.html' %}
+
+{% block content %}
+<script type="text/javascript">
+$(function () {
+    $("#rateYo{{album.id}}").rateYo({
+        rating: {{album.rate or 0}},
+        starWidth: "25px",
+        numStars: 10,
+        maxValue: 10,
+        halfStar: true,
+        onSet: function (rating, rateYoInstance) {
+            $.getJSON($SCRIPT_ROOT + '/_rate', {
+                type: 'album',
+                id: {{album.id}},
+                note: rating
+            }, function(data) {
+                $.notify({
+                    message : "Rate " + rating + " saved for " + '{{album.name}}' + " album !",
+                },{
+                    type: "success",
+                    delay: 1000,
+                    allow_dismiss: false,
+                    offset: 100
+                });
+            });
+            return false;
+        }
+    });
+});
+</script>
+<div id="artist" class="row">
+  <div class="col-sm-12 page-header">
+    <div class="row">
+      <h1>{{album.artist.name}}</h1>
+      <h1>{{album.name}} {% if album.year %}-{% endif %} {{album.year or ''}}</h1>
+    </div>
+    <div class='rating'>
+      <div id="rateYo{{album.id}}"></div>
+    </div>
+  </div>
+</div>
+
+
+{% endblock %}

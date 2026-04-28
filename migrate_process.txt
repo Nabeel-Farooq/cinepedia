@@ -1,0 +1,12 @@
+# 1st Creation
+- use db_create.py 1st time to create database tables
+
+# Update model
+- update models.py
+- run db_migrate.py to prepare sql upgrade script
+- run db_upgrade.py to upgrade database
+
+- run db_downgrade.py to downgrade to previous version
+
+
+ref: https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-iv-database

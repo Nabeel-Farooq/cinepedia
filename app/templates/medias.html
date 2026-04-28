@@ -1,0 +1,56 @@
+{% extends 'index.html' %}
+
+{% block content %}
+
+<script type="text/javascript">
+{% for media in medias %}
+$(function () {
+    $("#rateYo{{media.id}}").rateYo({
+        rating: {{media.rate or 0}},
+        starWidth: "18px",
+        numStars: 5,
+        maxValue: 5,
+        halfStar: true,
+        onSet: function (rating, rateYoInstance) {
+            $.getJSON($SCRIPT_ROOT + '/_rate', {
+                type: 'media',
+                id: {{media.id}},
+                note: rating
+            }, function(data) {
+                $.notify({
+                    message : "Rate " + rating + " saved for " + '{{media.name}}' + " !",
+                },{
+                    type: "success",
+                    delay: 1000,
+                    allow_dismiss: false,
+                    offset: 100
+                });
+            });
+            return false;
+        }
+    });
+});
+{% endfor %}
+</script>
+
+<div id="medias" class="row">
+	<div class="col-sm-12">
+		<div class="row">
+			{{ pagination.info }}
+     			 <div>{{ pagination.links }}</div>
+			
+			{% for media in medias %}
+			<div class="col-md-3">
+				<div class="well" align="center" style="height: 225px;">
+						<div ><a href="/category/{{media.category.slug}}/{{media.slug}}">{{media.name}}</a> <a target="_blank" href="{{media.url}}"><span class="glyphicon glyphicon-link"></span></a></div>
+						<div ><img src="{{media.img_url}}" width='100' /></div><br />
+				              <div id="rateYo{{media.id}}"></div> 
+			</div></div>
+			{% endfor %}
+		</div>
+	</div>
+</div>
+
+{{ pagination.links }}
+
+{% endblock %}

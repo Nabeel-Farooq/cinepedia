@@ -1,0 +1,61 @@
+{% extends 'index.html' %}
+
+{% block content %}
+
+<script type="text/javascript">
+{% for album in albums %}
+$(function () {
+    $("#rateYo{{album.id}}").rateYo({
+        rating: {{album.rate or 0}},
+        starWidth: "18px",
+        numStars: 10,
+        maxValue: 10,
+        halfStar: true,
+        onSet: function (rating, rateYoInstance) {
+            $.getJSON($SCRIPT_ROOT + '/_rate', {
+                type: 'album',
+                id: {{album.id}},
+                note: rating
+            }, function(data) {
+                $.notify({
+                    message : "Rate " + rating + " saved for " + '{{album.name}}' + " !",
+                },{
+                    type: "success",
+                    delay: 1000,
+                    allow_dismiss: false,
+                    offset: 100
+                });
+            });
+            return false;
+        }
+    });
+});
+{% endfor %}
+</script>
+
+<div id="albums" class="row">
+  <div class="col-sm-12">
+    <div class="row">
+      {{ pagination.info }}
+      <div>{{ pagination.links }}</div>
+      {% for album in albums %}
+      <div class="col-md-3"><div class="well">
+          <div class="row">
+            <div class="col-md-12">
+              {{album.artist.name}} - 
+              <a href="/album/{{album.id}}">{{album.name}} - {{album.year}}</a>
+            </div>
+            <div class="col-md-12 rating">
+              <div id="rateYo{{album.id}}"></div> 
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+{{ pagination.links }}
+
+{% endblock %}
